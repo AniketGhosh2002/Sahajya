@@ -30,7 +30,6 @@ Sahajya | Participants
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ participant.username }}</td>
                                 <td>
-                                    <a href="{% url 'rate_participant' event.id participant.id %}" class="btn btn-warning btn-sm">Rate</a>
                                     <a href="{% url 'remove_participant' event.id participant.id %}" class="btn btn-danger btn-sm">Remove</a>
                                 </td>                                
                             </tr>
