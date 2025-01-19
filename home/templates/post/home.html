@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+Sahajya | Home
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+
+        <!-- Welcome Section -->
+
+<div class="container" style="font-family: 'Pacifico', cursive; color: #6a11cb;">
+    <h2 class="text-center mb-2">Welcome, {{ user.username }}</h2>
+</div>
+
+<div class="container-fluid mt-2">
+    <div class="card border-0 mb-3" style="margin: 0 auto; padding: 15px; max-width: 1400px;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?data=Thanks%20for%20using%20Sahajya%20Website%20!&amp;size=400x400&amp;color=6a11cb" alt="" title="SahajyaQR" style="object-fit: cover; height: 350px;"/>
+            </div>
+            <div class="col-md-8" >
+                <div class="card-body p-3">
+                    <h2 class="card-title" style="font-family: 'Pacifico', cursive; color: #6a11cb;">Your Contribution Can Change Lives!</h2>
+                    <p class="card-text" style="font-size: 1rem; line-height: 1.5;">
+                        Every little bit counts in making a difference. With your support, we can feed hungry children, educate the underprivileged and empower communities to thrive.<br>
+                        Imagine the joy you bring when you help create brighter futures. Your generous donation today will have a lasting impact on someone's life.
+                    </p>
+                    <p class="card-text" style="font-size: 1.2rem;">
+                        <strong>UPI ID:</strong> <span style="color: #6a11cb;">sahajya2025-1@oksbi | sahajya2025-2@okhdfc</span><br>
+                        <strong>Phone Number:</strong> <span style="color: #6a11cb;">+91 1234567890 | +91 9876543210</span><br>
+                        <small class="text-body-secondary">Accepted payments by any UPI app</small>
+                    </p>
+                    <p class="card-text" style="font-size: 1rem;">
+                        <small>Together, we can create a world of hope and opportunity for all.<br>
+                            Thank you for being the change the world needs!
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Blog Section -->
+    <div class="text-center my-4" id="blogs" style="font-family: 'Pacifico', cursive; color: #6a11cb;">
+        <h2>-: Blog Section :-</h2>
+    </div>
+    {% if user.is_superuser %}
+    <div class="mb-4">
+        <a class="btn btn-primary btn-sm" style="background-color: #6a11cb;" href="{% url 'blogpost' %}">Create Post</a>
+    </div>
+    {% endif %}
+
+    {% if blog_section %}
+        <ul class="list-group mt-3">
+            {% for blog in blog_section %}
+            <div class="card mb-3">
+                {% if blog.image %}
+                <img src="{{ blog.image.url }}" class="card-img-top" alt="{{ blog.title }}">
+                {% else %}
+                <img src="..." class="card-img-top" alt="...">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ blog.title }}</h5>
+                    <p class="card-text">{{ blog.content|linebreaks }}</p>
+                    <p class="card-text">
+                        <small class="text-body-secondary">Created: {{ blog.created_at|date:"M d, Y H:i" }}</small><br>
+                        <small class="text-body-secondary">Last updated: {{ blog.updated_at|date:"M d, Y H:i" }}</small>
+                    </p>
+                    {% if user.is_authenticated %}
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <a href="{% url 'donate' blog.id %}" class="btn btn-outline-success btn-sm">Donate</a>
+                    </div>
+                    {% endif %}
+                    {% if blog.author == user %}
+                        <a class="btn btn-warning btn-sm" href="{% url 'blog_edit' blog.id %}">Edit</a>
+                        <a class="btn btn-danger btn-sm ms-2" href="{% url 'blog_delete' blog.id %}">Delete</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No blogs available.</p>
+    {% endif %}
+
+    <!-- Event Section -->
+    <div class="text-center my-4" id="events" style="font-family: 'Pacifico', cursive; color: #6a11cb;">
+        <h2>-: Event Section :-</h2>
+    </div>
+    {% if user.is_superuser %}
+    <div class="mb-4">
+        <a class="btn btn-primary btn-sm" style="background-color: #6a11cb;" href="{% url 'event_create' %}">Create Event</a>
+    </div>
+    {% endif %}
+
+    {% if event_section %}
+        <div class="row gy-3">
+            {% for event in event_section %}
+            <div class="col-md-3 d-flex">
+            <div class="card flex-fill" style="width: 18rem;">
+                {% if event.image %}
+                <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.name }}">
+                {% else %}
+                <img src="..." class="card-img-top" alt="...">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <p class="card-text">{{ event.description|linebreaks }}</p>
+                    <p class="card-text">
+                        <strong>Date:</strong> {{ event.date|date:"M d, Y" }}<br>
+                        <strong>Time:</strong> {{ event.time|time:"h:i A" }}<br>
+                        <strong>Total Participants:</strong> {{ event.participants.count }}
+                    </p>               
+                    {% if user.is_authenticated %}
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        {% if not event.is_frozen %}
+                        {% if event.id in user_participation %}
+                        <a href="{% url 'join_event' event.id %}" class="btn btn-outline-danger btn-sm me-2">Leave Event</a>
+                        {% else %}
+                        <a href="{% url 'join_event' event.id %}" class="btn btn-outline-success btn-sm me-2">Join Event</a>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% if user.is_superuser %}
+                        <a href="{% url 'freeze_event' event.id %}" class="btn btn-primary btn-sm mt-2">
+                            {% if event.is_frozen %}Open{% else %}Freeze{% endif %}
+                        </a>
+                    {% endif %}
+                    {% if event.organizer == user %}
+                        <a class="btn btn-warning btn-sm ms-2 mt-2" href="{% url 'event_edit' event.id %}">Edit</a>
+                        <a class="btn btn-danger btn-sm ms-2 mt-2" href="{% url 'event_delete' event.id %}">Delete</a>
+                    {% endif %}
+                </div>
+            </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No events available.</p>
+    {% endif %}
+</div>
+{% endblock %}

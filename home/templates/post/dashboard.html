@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}
+Sahajya | Dashboard
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4" style="font-family: 'Pacifico', cursive; color: #6a11cb;">-: Dashboard :-</h1>
+    
+    <!-- Donations Section -->
+    <div class="card mb-4 shadow">
+        <div class="card-header text-white" style="background: linear-gradient(to right, #6a11cb, #2575fc);">
+            <h2 class="h4">Donations</h2>
+        </div>
+        <div class="card-body">
+            {% if dashboard.donations %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Blog Post</th>
+                                <th>Amount</th>
+                                <th>Timestamp</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for donation in dashboard.donations %}
+                                <tr>
+                                    <td>{{ donation.blog_post.title }}</td>
+                                    <td>₹{{ donation.amount }}</td>
+                                    <td>{{ donation.updated_at|date:"M d, Y H:i" }}</td>
+                                    <td>
+                                        {% if donation.status == "Approved" %}
+                                            <span class="badge bg-success">{{ donation.status }}</span>
+                                        {% elif donation.status == "Pending" %}
+                                            <span class="badge bg-warning text-dark">{{ donation.status }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ donation.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            </div>
+            {% else %}
+                <p class="text-muted">You have not made any donations yet.</p>
+            {% endif %}
+    </div>
+</div>
+
+    <!-- Events Section -->
+    <div class="card shadow">
+        <div class="card-header text-white" style="background: linear-gradient(to right, #6a11cb, #2575fc);">
+            <h2 class="h4">Joined Events</h2>
+        </div>
+        <div class="card-body">
+            {% if joined_events %}
+                <div class="row gy-4">
+                    {% for event in joined_events %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100">
+                                {% if event.image %}
+                                    <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.name }}">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="No Image">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ event.name }}</h5>
+                                    <p class="card-text">{{ event.description|linebreaks }}</p>
+                                    <p class="card-text">
+                                        <strong>Date:</strong> {{ event.date|date:"M d, Y" }}<br>
+                                        <strong>Time:</strong> {{ event.time|time:"h:i A" }}<br>
+                                        <strong>Total Participants:</strong> {{ event.participants.count }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">You haven't joined any events yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

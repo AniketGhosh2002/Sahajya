@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}
+Sahajya | Donations
+{% endblock %}
+
+{% block content %}
+
+        <!--Approval Section-->
+<div class="container mt-5">
+    <h1 class="text-center mb-4" style="font-family: 'Pacifico', cursive; color: #6a11cb;">-: Approval Section :-</h1>
+
+    {% if pending_donations %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Blog Post</th>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Payment</th>
+                        <th>Timestamp</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for donation in pending_donations %}
+                        <tr>
+                            <td>{{ donation.blog_post.title }}</td>
+                            <td>{{ donation.user.username }}</td>
+                            <td>₹{{ donation.amount }}</td>
+                            <td>
+                                {% if donation.payment_image %}
+                                    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#imageModal{{ donation.id }}">
+                                        View
+                                    </button>
+                                    <div class="modal fade" id="imageModal{{ donation.id }}" tabindex="-1" aria-labelledby="imageModalLabel{{ donation.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="imageModalLabel{{ donation.id }}">Payment Screenshot</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <img src="{{ donation.payment_image.url }}" alt="Payment Screenshot" class="img-fluid rounded">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted">NA</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ donation.updated_at|date:"M d, Y H:i" }}</td>
+                            <td><span class="badge bg-warning text-dark">{{ donation.status }}</span></td>
+                            <td>
+                                <form method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="donation_id" value="{{ donation.id }}">
+                                    <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                                </form>
+
+                                <form method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="donation_id" value="{{ donation.id }}">
+                                    <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center" role="alert">
+            <strong>No pending donations.</strong>
+        </div>
+    {% endif %}
+</div>
+
+
+
+    <!--Donations Section-->
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4" style="font-family: 'Pacifico', cursive; color: #6a11cb;">-: Donations :-</h1>
+
+    {% if dashboard.donations %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Blog Post</th>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Payment</th>
+                        <th>Timestamp</th>
+                        <th>Status</th>
+                        <th>Approver</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for donation in dashboard.donations %}
+                        <tr>
+                            <td>{{ donation.blog_post.title }}</td>
+                            <td>{{ donation.user.username }}</td>
+                            <td>₹{{ donation.amount }}</td>
+                            <td>
+                                {% if donation.payment_image %}
+                                    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#imageModal{{ donation.id }}">
+                                        View
+                                    </button>
+                                    <div class="modal fade" id="imageModal{{ donation.id }}" tabindex="-1" aria-labelledby="imageModalLabel{{ donation.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="imageModalLabel{{ donation.id }}">Payment Screenshot</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <img src="{{ donation.payment_image.url }}" alt="Payment Screenshot" class="img-fluid rounded">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted">NA</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ donation.updated_at|date:"M d, Y H:i" }}</td>
+                            <td>
+                                {% if donation.status == "Approved" %}
+                                    <span class="badge bg-success">{{ donation.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ donation.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ donation.approver.username }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center" role="alert">
+            <strong>No recorded donations.</strong>
+        </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}

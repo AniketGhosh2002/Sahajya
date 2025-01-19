@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+Sahajya | Event
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="color: #6a11cb;">
+        {% if form.instance.pk %}
+        Edit Event
+        {% else %} 
+        Create Event
+        {% endif %}
+    </h2>
+    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            {{ form.name.label_tag }}
+            {{ form.name }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.image.label_tag }}
+            {{ form.image }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.date.label_tag }}
+            {{ form.date }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.time.label_tag }}
+            {{ form.time }}
+        </div>
+        
+        <div class="d-flex justify-content-center p-2 mb-4">
+            <button class="btn btn-primary btn-sm" style="background-color: #6a11cb;" type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
