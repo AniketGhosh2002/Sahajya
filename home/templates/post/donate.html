@@ -6,6 +6,29 @@ Sahajya | Donate
 
 {% block content %}
 
+<div class="container">
+    <!-- Donation Form -->
+    <form method="POST" enctype="multipart/form-data" class="shadow p-4 rounded border">
+        <h5 class="text-center mb-4" >{{ blog_post.title }}</h5>
+        {% csrf_token %}
+        
+        <div class="input-group-sm mb-1">
+            <label for="amount" class="form-label">Donation Amount (in rupees) : </label>
+            {{ form.amount }}
+        </div>
+        
+        <div class="input-group-sm mb-1">
+            <label for="payment_image" class="form-label">Payment Screenshot :</label>
+            {{ form.payment_image }}
+        </div>
+
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-outline-success btn-sm">Submit</button>
+        </div>
+    </form>
+</div>
+
+
 <div class="container-fluid">
     <div class="card border-0 mb-3" style="margin: 0 auto; padding: 15px; max-width: 1400px;">
         <div class="row g-0">
@@ -35,27 +58,4 @@ Sahajya | Donate
     </div>
 </div>
 
-<div class="container">
-    
-
-    <!-- Donation Form -->
-    <form method="POST" enctype="multipart/form-data" class="shadow p-4 rounded border">
-        <h5 class="text-center mb-4" >{{ blog_post.title }}</h5>
-        {% csrf_token %}
-        
-        <div class="input-group-sm mb-1">
-            <label for="amount" class="form-label">Donation Amount (in rupees) : </label>
-            {{ form.amount }}
-        </div>
-        
-        <div class="input-group-sm mb-1">
-            <label for="payment_image" class="form-label">Payment Screenshot :</label>
-            {{ form.payment_image }}
-        </div>
-
-        <div class="text-center mt-3">
-            <button type="submit" class="btn btn-outline-success btn-sm">Submit</button>
-        </div>
-    </form>
-</div>
 {% endblock %}
