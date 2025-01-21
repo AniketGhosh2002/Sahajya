@@ -6,14 +6,19 @@ Sahajya | Donate
 
 {% block content %}
 
-<div class="container">
+<div class="container mt-5">
+
+
+<div class="container-fluid">
+    
+
     <!-- Donation Form -->
     <form method="POST" enctype="multipart/form-data" class="shadow p-4 rounded border">
         <h5 class="text-center mb-4" >{{ blog_post.title }}</h5>
         {% csrf_token %}
         
         <div class="input-group-sm mb-1">
-            <label for="amount" class="form-label">Donation Amount (in rupees) :</label>
+            <label for="amount" class="form-label">Donation Amount (in rupees) : </label>
             {{ form.amount }}
         </div>
         
@@ -28,11 +33,12 @@ Sahajya | Donate
     </form>
 </div>
 
+
 <div class="container-fluid">
     <div class="card border-0 mb-3" style="margin: 0 auto; padding: 15px; max-width: 1400px;">
         <div class="row g-0">
             <div class="col-md-4">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?data=Thanks%20for%20using%20Sahajya%20Website%20!&amp;size=300x300&amp;color=6a11cb" alt="" title="SahajyaQR" style="object-fit: cover;"/>
+                <img src="data:image/png;base64,{{ qr_code }}" alt="Payment QR Code" class="img-fluid rounded shadow" >
             </div>
             <div class="col-md-8" >
                 <div class="card-body p-3">
@@ -46,15 +52,12 @@ Sahajya | Donate
                         <strong>Phone Number:</strong> <span style="color: #6a11cb;">+91 1234567890 | +91 9876543210</span><br>
                         <small class="text-body-secondary">Accepted payments by any UPI app</small>
                     </p>
-                    <p class="card-text" style="font-size: 1rem;">
-                        <small>Together, we can create a world of hope and opportunity for all.<br>
-                            Thank you for being the change the world needs!
-                        </small>
-                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
+</div>
 {% endblock %}

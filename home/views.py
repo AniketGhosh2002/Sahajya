@@ -7,6 +7,11 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
+import qrcode
+import base64
+from io import BytesIO
+from decouple import config
+
 
 
 
@@ -21,7 +26,22 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
 
+
+def generate_qr_code():
+    upi_data = "upi://pay?pa=8902038188@apl"
+    qr = qrcode.QRCode()
+    qr.add_data(upi_data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="#6a11cb", back_color="white")
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    buffer.seek(0)
+    img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    return img_base64
+
+
 def home(request):
+    qr_code_base64 = generate_qr_code()
     search_query = request.GET.get('search_query', '')
     blog_section = BlogPost.objects.all()
     event_section = Event.objects.all()
@@ -42,6 +62,7 @@ def home(request):
         'event_section': event_section,
         'search_query': search_query,
         'user_participation': user_participation,
+        'qr_code': qr_code_base64,
     }
     return render(request, 'post/home.html', context)
 
@@ -101,6 +122,7 @@ def blog_delete(request, blog_id):
 
 @login_required
 def donate(request, blog_id):
+    qr_code_base64 = generate_qr_code()
     blog_post = get_object_or_404(BlogPost, pk=blog_id)
     if request.method == 'POST':
         form = DonationForm(request.POST, request.FILES)
@@ -116,6 +138,7 @@ def donate(request, blog_id):
     return render(request, 'post/donate.html', {
         'form': form, 
         'blog_post': blog_post,
+        'qr_code': qr_code_base64,
         })
 
 @login_required
